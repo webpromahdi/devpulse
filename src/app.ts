@@ -1,9 +1,12 @@
 import express from "express";
+import { authRouter } from "./module/auth/auth.route.js";
+import globalErrorHandler from "./middleware/globalErrorHandler.js";
 const app = express();
-const port = 3000;
 
-app.get("/", (req, res) => {
-  res.send("Hello mahdi!");
-});
+app.use(express.json());
+
+app.use("/api/auth", authRouter);
+
+app.use(globalErrorHandler);
 
 export default app;
