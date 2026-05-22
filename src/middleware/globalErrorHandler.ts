@@ -12,6 +12,8 @@ const globalErrorHandler = (
   if (err.message === "Forbidden") statusCode = 403;
   if (err.message === "Conflict") statusCode = 409;
   if (err.message === "Unauthorized access") statusCode = 401;
+  if (err.message === "Invalid email or password") statusCode = 401;
+  if (err.message === "Invalid role") statusCode = 400;
   sendResponse(res, {
     statusCode: statusCode,
     success: false,
