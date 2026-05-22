@@ -7,8 +7,13 @@ const globalErrorHandler = (
   res: Response,
   next: NextFunction,
 ) => {
+  let statusCode = 500;
+  if (err.message === "Issue not found") statusCode = 404;
+  if (err.message === "Forbidden") statusCode = 403;
+  if (err.message === "Conflict") statusCode = 409;
+  if (err.message === "Unauthorized access") statusCode = 401;
   sendResponse(res, {
-    statusCode: 500,
+    statusCode: statusCode,
     success: false,
     message: err.message || "Something went wrong",
   });

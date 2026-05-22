@@ -36,8 +36,24 @@ const getSingleIssue = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, { statusCode: 200, success: true, data: result });
 });
 
+const updateIssue = catchAsync(async (req: Request, res: Response) => {
+  const result = await issuesService.updateIssueInDB(
+    req.params.id as string,
+    req.body,
+    req.user!.id,
+    req.user!.role,
+  );
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Issue updated successfully",
+    data: result,
+  });
+});
+
 export const issueController = {
   createIssue,
   getIssues,
   getSingleIssue,
+  updateIssue,
 };
