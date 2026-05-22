@@ -44,10 +44,35 @@ const getIssuesFromDB = async ({
     `SELECT * FROM issues ${whereClause} ORDER BY created_at ${orderDir}`,
     values,
   );
-  return result;
+
+  const issues = result.rows;
+  for (const issue of issues) {
+    const reporterResult = await pool.query(
+      `SELECT id, name, role FROM users WHERE id = $1`,
+      [issue.reporter_id],
+    );
+    issue.reporter = reporterResult.rows[0] || null;
+    delete issue.reporter_id;
+  }
+
+  return issues;
+};
+
+const getSingleIssueFromDB = async (id: string) => {
+  const result = await pool.query(`SELECT * FROM issues WHERE id = $1`, [id]);
+  const issue = result.rows[0];
+  if (!issue) return null;
+  const reporterResult = await pool.query(
+    `SELECT id, name, role FROM users WHERE id = $1`,
+    [issue.reporter_id],
+  );
+  issue.reporter = reporterResult.rows[0] || null;
+  delete issue.reporter_id;
+  return issue;
 };
 
 export const issuesService = {
   createIssueIntoDB,
   getIssuesFromDB,
+  getSingleIssueFromDB,
 };

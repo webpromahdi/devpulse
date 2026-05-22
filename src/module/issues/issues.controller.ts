@@ -23,12 +23,21 @@ const getIssues = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: 200,
     success: true,
-    message: "Issues retrieved successfully",
-    data: result.rows,
+    data: result,
   });
+});
+
+const getSingleIssue = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await issuesService.getSingleIssueFromDB(id as string);
+  if (!result) {
+    return res.status(404).json({ success: false, message: "Issue not found" });
+  }
+  sendResponse(res, { statusCode: 200, success: true, data: result });
 });
 
 export const issueController = {
   createIssue,
   getIssues,
+  getSingleIssue,
 };
