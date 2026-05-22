@@ -25,8 +25,24 @@ const getIssuesFromDB = async ({
   status?: string;
 }) => {
   const orderDir = sort === "oldest" ? "ASC" : "DESC";
+  const conditions: string[] = [];
+  const values: unknown[] = [];
+
+  if (type) {
+    conditions.push(`type = $${values.length + 1}`);
+    values.push(type);
+  }
+  if (status) {
+    conditions.push(`status = $${values.length + 1}`);
+    values.push(status);
+  }
+
+  const whereClause =
+    conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+
   const result = await pool.query(
-    `SELECT * FROM issues ORDER BY created_at ${orderDir}`,
+    `SELECT * FROM issues ${whereClause} ORDER BY created_at ${orderDir}`,
+    values,
   );
   return result;
 };
